@@ -11,6 +11,16 @@ main {
   border-radius: 8px;
 }
 
+form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+#todo-input {
+  flex: 1;
+  padding: 0.5rem;
+}
+
 ul {
   list-style: none;
   padding: 0;

@@ -9,6 +9,19 @@ let todos = [
 let editingId = null;
 
 const list = document.getElementById("todo-list");
+const form = document.getElementById("todo-form");
+const input = document.getElementById("todo-input");
+
+// 5. Add a new task
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const title = input.value.trim();
+  if (!title) return;
+  const nextId = todos.length ? Math.max(...todos.map((t) => t.id)) + 1 : 1;
+  todos.push({ id: nextId, title, completed: false });
+  input.value = "";
+  render();
+});
 
 // 1. View all tasks
 function render() {
