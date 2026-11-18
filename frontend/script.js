@@ -11,8 +11,19 @@ let editingId = null;
 const list = document.getElementById("todo-list");
 const form = document.getElementById("todo-form");
 const input = document.getElementById("todo-input");
+const summary = document.getElementById("summary");
+const empty = document.getElementById("empty");
 
-// 5. Add a new task
+function makeButton(label, className, onClick) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.textContent = label;
+  btn.className = `btn btn-sm ${className}`.trim();
+  btn.addEventListener("click", onClick);
+  return btn;
+}
+
+// Add a new task
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const title = input.value.trim();
@@ -23,14 +34,21 @@ form.addEventListener("submit", (e) => {
   render();
 });
 
-// 1. View all tasks
+// View all tasks
 function render() {
   list.innerHTML = "";
+
+  const done = todos.filter((t) => t.completed).length;
+  summary.textContent = todos.length
+    ? `${done} of ${todos.length} completed`
+    : "";
+  empty.hidden = todos.length > 0;
+
   todos.forEach((todo) => {
     const li = document.createElement("li");
-    if (todo.completed) li.classList.add("done");
+    li.className = "todo-item" + (todo.completed ? " done" : "");
 
-    // 2. Mark a task as completed
+    // Mark a task as completed
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = todo.completed;
@@ -41,50 +59,61 @@ function render() {
     li.appendChild(checkbox);
 
     if (editingId === todo.id) {
-      // 3. Edit a task (edit mode)
+      // Edit a task (edit mode)
       const editInput = document.createElement("input");
-      editInput.className = "edit-input";
+      editInput.type = "text";
+      editInput.className = "todo-title";
       editInput.value = todo.title;
 
-      const save = document.createElement("button");
-      save.textContent = "Save";
-      save.addEventListener("click", () => {
+      const save = () => {
         const newTitle = editInput.value.trim();
         if (newTitle) todo.title = newTitle;
         editingId = null;
         render();
+      };
+      editInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") save();
+        if (e.key === "Escape") {
+          editingId = null;
+          render();
+        }
       });
 
-      const cancel = document.createElement("button");
-      cancel.textContent = "Cancel";
-      cancel.addEventListener("click", () => {
-        editingId = null;
-        render();
-      });
+      const actions = document.createElement("div");
+      actions.className = "actions";
+      actions.append(
+        makeButton("Save", "btn-primary", save),
+        makeButton("Cancel", "", () => {
+          editingId = null;
+          render();
+        })
+      );
 
-      li.append(editInput, save, cancel);
-    } else {
-      const span = document.createElement("span");
-      span.textContent = todo.title;
-
-      const edit = document.createElement("button");
-      edit.textContent = "Edit";
-      edit.addEventListener("click", () => {
-        editingId = todo.id;
-        render();
-      });
-
-      // 4. Delete a task
-      const del = document.createElement("button");
-      del.textContent = "Delete";
-      del.addEventListener("click", () => {
-        todos = todos.filter((t) => t.id !== todo.id);
-        render();
-      });
-
-      li.append(span, edit, del);
+      li.append(editInput, actions);
+      list.appendChild(li);
+      editInput.focus();
+      return;
     }
 
+    const title = document.createElement("span");
+    title.className = "todo-title";
+    title.textContent = todo.title;
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+    actions.append(
+      makeButton("Edit", "", () => {
+        editingId = todo.id;
+        render();
+      }),
+      // Delete a task
+      makeButton("Delete", "btn-danger", () => {
+        todos = todos.filter((t) => t.id !== todo.id);
+        render();
+      })
+    );
+
+    li.append(title, actions);
     list.appendChild(li);
   });
 }
