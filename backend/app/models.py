@@ -4,10 +4,8 @@ from .database import Base
 
 
 class Todo(Base):
-    """Database table definition."""
-
     __tablename__ = "todos"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
     completed = Column(Boolean, default=False)

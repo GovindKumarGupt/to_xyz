@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from .. import crud, schemas
 from ..database import get_db
 
-router = APIRouter(prefix="/todos", tags=["todos"])
+router = APIRouter(prefix="/todos")
 
 
 @router.get("/", response_model=list[schemas.TodoOut])

@@ -171,6 +171,16 @@ input[type="text"]:focus {
   color: var(--muted);
 }
 
+.error {
+  margin: 0 0 1rem;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.875rem;
+  color: var(--danger);
+  background: var(--danger-bg);
+  border: 1px solid #fecaca;
+  border-radius: var(--radius);
+}
+
 @media (max-width: 480px) {
   .card {
     padding: 1.25rem;
